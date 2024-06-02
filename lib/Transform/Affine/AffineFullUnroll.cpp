@@ -1,10 +1,23 @@
 #include "lib/Transform/Affine/AffineFullUnroll.hpp"
+#include "mlir/Dialect/Affine/IR/AffineOps.h"
+#include "mlir/Dialect/Affine/LoopUtils.h"
+#include "mlir/Pass/Pass.h"
 
 namespace mlir {
 
     namespace tutorial {
 
-        void AffineFullUnrollPass::runOnOperation() { return; }
+        using mlir::affine::AffineForOp;
+        using mlir::affine::loopUnrollFull;
+
+        void AffineFullUnrollPass::runOnOperation() {
+            getOperation()->walk([&](AffineForOp op) {
+                if(failed(loopUnrollFull(op))) {
+                    op.emitError("unrolling failed");
+                    signalPassFailure();
+                }
+            });
+        }
 
     }
 
