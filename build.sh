@@ -1,10 +1,9 @@
 #!/bin/bash
 
 BUILD_SYSTEM="Ninja"
-BUILD_DIR=./build-`echo ${BUILD_SYSTEM} | tr '[:upper:]' '[:lower:]'`
+BUILD_DIR=./build
 
-#rm -rf $BUILD_DIR
-#mkdir $BUILD_DIR
+mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
 LLVM_BUILD_DIR=../llvm-project/build-mlir
@@ -21,3 +20,12 @@ popd
 cmake --build $BUILD_DIR --target mlir-headers
 cmake --build $BUILD_DIR --target mlir-doc
 cmake --build $BUILD_DIR --target tutorial-opt
+
+echo > compile_commands.json
+if [ -f $BUILD_DIR/compile_commands.json ]; then
+    cat $BUILD_DIR/compile_commands.json | head -n -1 >> compile_commands.json
+    echo "," >> compile_commands.json
+    cat $LLVM_BUILD_DIR/compile_commands.json | tail -n +2 >> compile_commands.json
+else
+    cp $LLVM_BUILD_DIR/compile_commands.json .
+fi
