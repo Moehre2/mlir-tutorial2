@@ -1,0 +1,10 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.configureArgs": [
+        "-DLLVM_DIR='../llvm-project/build-mlir/lib/cmake/llvm'",
+        "-DMLIR_DIR='../llvm-project/build-mlir/lib/cmake/mlir'",
+        "-DBUILD_DEPS=ON",
+        "-DBUILD_SHARED_LIBS=OFF",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+    ]
+}

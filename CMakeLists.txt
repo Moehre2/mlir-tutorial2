@@ -37,3 +37,14 @@ include_directories(${PROJECT_BINARY_DIR})
 add_subdirectory(lib)
 add_subdirectory(tools)
 
+add_custom_command(
+    OUTPUT ${PROJECT_BINARY_DIR}/.compile_commands.tmp
+    COMMAND echo > compile_commands.json && test -f ${PROJECT_BINARY_DIR}/compile_commands.json && cat ${PROJECT_BINARY_DIR}/compile_commands.json | head -n -1 >> compile_commands.json && echo "," >> compile_commands.json && cat ${PROJECT_SOURCE_DIR}/../llvm-project/build-mlir/compile_commands.json | tail -n +2 >> compile_commands.json || cp ${PROJECT_SOURCE_DIR}/../llvm-project/build-mlir/compile_commands.json .
+    COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/.compile_commands.tmp
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Creating compile_commands.json"
+)
+add_custom_target(
+    CreateCompileCommands ALL
+    DEPENDS ${PROJECT_BINARY_DIR}/compile_commands.json ${PROJECT_SOURCE_DIR}/compile_commands.json ${PROJECT_BINARY_DIR}/.compile_commands.tmp
+)
