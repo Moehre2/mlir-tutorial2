@@ -45,6 +45,17 @@ namespace mlir {
             PeelFromMul(mlir::MLIRContext* context) : mlir::OpRewritePattern<MulIOp>(context, 1) {}
 
             LogicalResult matchAndRewrite(MulIOp op, PatternRewriter& rewriter) const override {
+                Value lhs = op.getOperand(0);
+                Value rhs = op.getOperand(1);
+                auto rhsDefiningOp = rhs.getDefiningOp<arith::ConstantIntOp>();
+                if(!rhsDefiningOp)
+                    return failure();
+                int64_t value = rhsDefiningOp.value();
+                ConstantOp newConstant = rewriter.create<ConstantOp>(rhsDefiningOp.getLoc(), rewriter.getIntegerAttr(rhs.getType(), value - 1));
+                MulIOp newMul = rewriter.create<MulIOp>(op.getLoc(), lhs, newConstant);
+                AddIOp newAdd = rewriter.create<AddIOp>(op.getLoc(), newMul, lhs);
+                rewriter.replaceOp(op, newAdd);
+                rewriter.eraseOp(rhsDefiningOp);
                 return success();
             }
 
