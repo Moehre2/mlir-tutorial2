@@ -36,6 +36,7 @@ include_directories(${PROJECT_BINARY_DIR})
 
 add_subdirectory(lib)
 add_subdirectory(tools)
+add_subdirectory(tests)
 
 add_custom_target(
     CreateCompileCommands ALL
