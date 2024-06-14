@@ -1,6 +1,8 @@
 set(LLVM_TARGET_DEFINITIONS PolyDialect.td)
 mlir_tablegen(PolyDialect.h.inc -gen-dialect-decls)
 mlir_tablegen(PolyDialect.cpp.inc -gen-dialect-defs)
+mlir_tablegen(PolyTypes.h.inc -gen-typedef-decls -typedefs-dialect=poly)
+mlir_tablegen(PolyTypes.cpp.inc -gen-typedef-defs -typedefs-dialect=poly)
 add_public_tablegen_target(MLIRPolyOpsIncGen)
 add_dependencies(mlir-headers MLIRPolyOpsIncGen)
 
