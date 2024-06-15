@@ -11,9 +11,13 @@ class Poly_Type<string name, string typeMnemonic> : TypeDef<Poly_Dialect, name> 
 
 def Polynomial : Poly_Type<"Polynomial", "poly"> {
     let summary = "A polynomial with u32 coefficients";
+
     let description = [{
         A type for polynomial with integer coefficients in a single-variable polynomial ring.
     }];
+
+    let parameters = (ins "int":$degreeBound);
+    let assemblyFormat = "`<` $degreeBound `>`";
 }
 
 #endif
