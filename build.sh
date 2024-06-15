@@ -1,12 +1,16 @@
 #!/bin/bash
 
-BUILD_SYSTEM="Ninja"
-BUILD_DIR=./build
+BUILD_DIR=build
+LLVM_BUILD_DIR=externals/llvm-project/build
+
+BUILD_SYSTEM="Unix Makefiles"
+if [ $(which ninja) ]; then
+    BUILD_SYSTEM="Ninja"
+fi
 
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
-LLVM_BUILD_DIR=../llvm-project/build-mlir
 cmake -G $BUILD_SYSTEM .. \
     -DLLVM_DIR="$LLVM_BUILD_DIR/lib/cmake/llvm" \
     -DMLIR_DIR="$LLVM_BUILD_DIR/lib/cmake/mlir" \
@@ -17,15 +21,5 @@ cmake -G $BUILD_SYSTEM .. \
 
 popd
 
-cmake --build $BUILD_DIR --target mlir-headers
-cmake --build $BUILD_DIR --target mlir-doc
-cmake --build $BUILD_DIR --target tutorial-opt
-
-echo > compile_commands.json
-if [ -f $BUILD_DIR/compile_commands.json ]; then
-    cat $BUILD_DIR/compile_commands.json | head -n -1 >> compile_commands.json
-    echo "," >> compile_commands.json
-    cat $LLVM_BUILD_DIR/compile_commands.json | tail -n +2 >> compile_commands.json
-else
-    cp $LLVM_BUILD_DIR/compile_commands.json .
-fi
+cmake --build $BUILD_DIR --target check-mlir-tutorial
+cmake --build $BUILD_DIR --target CreateCompileCommands
