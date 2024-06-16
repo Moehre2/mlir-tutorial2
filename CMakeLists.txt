@@ -21,7 +21,7 @@ include(AddMLIR)
 include_directories(${LLVM_INCLUDE_DIRS})
 include_directories(${MLIR_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/../llvm-project)
+include_directories(${PROJECT_SOURCE_DIR}/externals/llvm-project)
 include_directories(${PROJECT_BINARY_DIR})
 
 #message(STATUS "Fetching or-tools...")
@@ -40,7 +40,12 @@ add_subdirectory(tests)
 
 add_custom_target(
     CreateCompileCommands ALL
-    COMMAND echo > compile_commands.json && test -f ${PROJECT_BINARY_DIR}/compile_commands.json && cat ${PROJECT_BINARY_DIR}/compile_commands.json | head -n -1 >> compile_commands.json && echo "," >> compile_commands.json && cat ${PROJECT_SOURCE_DIR}/../llvm-project/build-mlir/compile_commands.json | tail -n +2 >> compile_commands.json || cp ${PROJECT_SOURCE_DIR}/../llvm-project/build-mlir/compile_commands.json .
+    COMMAND echo > compile_commands.json && test -f ${PROJECT_BINARY_DIR}/compile_commands.json && cat ${PROJECT_BINARY_DIR}/compile_commands.json | head -n -1 >> compile_commands.json && echo "," >> compile_commands.json && cat ${PROJECT_SOURCE_DIR}/externals/llvm-project/build/compile_commands.json | tail -n +2 >> compile_commands.json || cp ${PROJECT_SOURCE_DIR}/externals/llvm-project/build/compile_commands.json .
+    DEPENDS tutorial-opt tutorial-lsp-server
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMENT "Creating compile_commands.json"
+)
+
+add_custom_target(build-full
+    DEPENDS tutorial-opt tutorial-lsp-server check-mlir-tutorial CreateCompileCommands
 )

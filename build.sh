@@ -21,5 +21,4 @@ cmake -G $BUILD_SYSTEM .. \
 
 popd
 
-cmake --build $BUILD_DIR --target check-mlir-tutorial
-cmake --build $BUILD_DIR --target CreateCompileCommands
+cmake --build $BUILD_DIR --target build-full
